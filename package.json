@@ -1,0 +1,19 @@
+{
+  "name": "database-briefings",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chrillah/database-briefings.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chrillah/database-briefings/issues"
+  },
+  "homepage": "https://github.com/chrillah/database-briefings#readme"
+}
