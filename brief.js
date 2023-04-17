@@ -44,30 +44,44 @@
 
 
 // Vi ska ge en response i form av statuskoder i headern
-const http = require('http')
-const PORT = process.env.PORT || 5001;
-const app = http.createServer((req, res) => {
-    res.writeHead(200, {"Content-Type":"text/html"});
+// const http = require('http')
+// const PORT = process.env.PORT || 5001;
+// const app = http.createServer((req, res) => {
+//     res.writeHead(200, {"Content-Type":"text/html"});
 
-    const url = req.url
-    if(url === '/profile'){
-        res.write('<h1>Welcome to my profile page</h1>')
-        res.end()
-    } else if(url === '/shipment'){
-        const payload = {
-            street : 'Disavägen 9',
-            city : 'Vallentuna'
-        }
-        res.writeHead(200, {"Content-Type" : "application/json"})
-        res.write(JSON.stringify(payload))
-        res.end()
-    }
-    else{
-        res.write('Du är på en annan adress')
-        res.end()
-    }
-})
+//     const url = req.url
+//     if(url === '/profile'){
+//         res.write('<h1>Welcome to my profile page</h1>')
+//         res.end()
+//     } else if(url === '/shipment'){
+//         const payload = {
+//             street : 'Disavägen 9',
+//             city : 'Vallentuna'
+//         }
+//         res.writeHead(200, {"Content-Type" : "application/json"})
+//         res.write(JSON.stringify(payload))
+//         res.end()
+//     }
+//     else{
+//         res.write('Du är på en annan adress')
+//         res.end()
+//     }
+// })
 
-.listen(PORT , () => {
-    console.log(`Welcome to port ${PORT}`)
+// .listen(PORT , () => {
+//     console.log(`Welcome to port ${PORT}`)
+// })
+
+
+// EXPRESS
+const express = require('express')
+
+// vi deklarerar att vår app ska arbeta med express
+const app = express()
+
+// Nedan gör vi ett enkelt GET request
+app.get('/', (request, response) => {
+    response.send('GET')
+}).listen(3000, () => {
+    console.log('Server startad på port 3000')
 })
