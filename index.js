@@ -12,7 +12,6 @@
 // Avancera - 2) Portar, adresser och statuskoder, utan Express - OK
 // const http = require('http')
 // const app = http.createServer((request, response)=>{
-
 //     if(request.url === '/'){
 //         response.write('Hejsan svejsan.')
 //     }
@@ -30,47 +29,66 @@
 //     console.log('Redo på http://localhost:3000/')
 // })
 
-// Avancera - 3)  - INTE OK
-
-// Olika adresser
+// Avancera - 3) Metoder utan Express - OK
 // const http = require('http')
+// let count = 0
 // const app = http.createServer((request, response)=>{
-
-    // if/ switch-sats för att hantera olika adresser
 //     if(request.url === '/'){
-//         response.write('Hemadress')
+//         response.write('Hejsan svejsan.')
+//     }
+//     else if(request.url === '/count' && request.method === 'GET'){
+//         response.write(`${count}`)
+//     }
+//     else if(request.url === '/increment'&& request.method === 'POST'){
+//         count++
+//         response.write(`${count}`)
+//     }
+//     else if(request.url === '/foo'){
+//         response.write('bar')
+//     }
+//     else if(request.url === '/baz'){
+//         response.write('qux')
 //     } else {
-//         response.write('Annan adress')
+//         response.statusCode = 404
 //     }
 //     response.end()
 // })
-// app.listen({port: 3000}, ()=>{
-//     console.log('Redo på http://localhost:3000/')
+// app.listen({port: 8080}, ()=>{
+//     console.log('Redo på http://localhost:8080/')
 // })
 
-
-// SKICKA EN METOD
-// const http = require('http')
-// const app = http.createServer((request, response)=>{
-
-    // ta emot en metod
-//     response.write(`Du gjorde ett ${request.method} anrop bitch`)
-//     response.end()
-// })
-// app.listen({port: 3000}, ()=>{
-//     console.log('Redo på http://localhost:3000/')
-// })
-
-// Skicka statuskod
-// const http = require('http')
-// const app = http.createServer((request, response)=>{
-
-//     response.statusCode = 401
-//     response.write('Något är fel, statuskod och grejjer')
-//     response.end()
-// })
-// app.listen({port: 3000}, ()=>{
-//     console.log('Redo på http://localhost:3000/')
-// })
-
-
+// Avancera - 4) En adressparameter utan Express - INTE OK
+const http = require('http')
+let count = 0
+const app = http.createServer((request, response) => {
+    if (request.url === '/') {
+        response.write('Hejsan svejsan.')
+    } else if (request.url === '/count') {
+        if (request.method === 'GET') {
+            response.write(`${count}`)
+        } else {
+            response.statusCode = 405
+        }
+    } else if (request.url === '/increment') {
+        if (request.method === 'POST') {
+            count++
+            response.write(`${count}`)
+        } else {
+            response.statusCode = 405
+        }
+    } else if (request.url.startsWith('/add/') && request.method === 'POST') {
+        const number = parseInt(request.url.split('/')[2])
+        count += number
+        response.write(`${count}`)
+    } else if (request.url === '/foo') {
+        response.write('bar')
+    } else if (request.url === '/baz') {
+        response.write('qux')
+    } else {
+        response.statusCode = 404
+    }
+    response.end()
+})
+app.listen({ port: 8080 }, () => {
+    console.log('Redo på http://localhost:8080/')
+})
