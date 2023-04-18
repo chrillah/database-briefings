@@ -235,22 +235,49 @@
 // })
 
 // Avancera - 3) Strängar i en JSON-array)
-// INTE OK
+// OK
 
-const express = require('express')
+// const express = require('express')
 
-const app = express()
+// const app = express()
 
-const array = []
+// const array = []
 
-app.get('/', (request, response)=>{
-   const agent =  request.headers['user-agent']
-    array.push(agent)
-    response.send(`${agent}`)
-})
-app.get('/log', (request, response)=>{
-    response.json(array)
-})
-.listen(8080, ()=>{
-    console.log('8080 är igång')
-})
+// app.get('/', (request, response)=>{
+//    const agent =  request.headers['user-agent']
+//     array.push(agent)
+//     response.send(`${agent}`)
+// })
+// app.get('/log', (request, response)=>{
+//     response.json(array)
+// })
+// .listen(8080, ()=>{
+//     console.log('8080 är igång')
+// })
+
+const express = require('express');
+const app = express();
+
+const userAgents = [];
+
+app.get('/', (req, res) => {
+  const userAgent = req.get('User-Agent');
+  const date = new Date();
+  const isoDate = date.toISOString();
+  const userAgentObj = { userAgent, time: isoDate };
+  userAgents.push(userAgentObj);
+  res.send('User-Agent and time saved to array!');
+});
+
+app.get('/log', (req, res) => {
+  res.json(userAgents);
+});
+
+app.delete('/log', (req, res) => {
+  userAgents.length = 0;
+  res.send('Array cleared');
+});
+
+app.listen(8080, () => {
+  console.log('Server started on port 8080');
+});

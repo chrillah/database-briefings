@@ -74,14 +74,62 @@
 
 
 // EXPRESS
-const express = require('express')
+// const express = require('express')
 
 // vi deklarerar att vår app ska arbeta med express
-const app = express()
+// const app = express()
 
 // Nedan gör vi ett enkelt GET request
-app.get('/', (request, response) => {
-    response.send('GET')
-}).listen(3000, () => {
-    console.log('Server startad på port 3000')
+// app.get('/', (request, response) => {
+//     response.send('GET')
+// }).listen(3000, () => {
+//     console.log('Server startad på port 3000')
+// })
+
+
+// const express = require('express')
+// const app = express()
+
+// app.get('/', (request, response)=>{
+//     response.send('Hej')
+// })
+// app.get('/one', (request, response)=>{
+//     response.send('1')
+// })
+// app.get('/two', (request, response)=>{
+//     response.send('2')
+// })
+// app.get('/three', (request, response)=>{
+//     response.send('3')
+// })
+
+// .listen(3000, ()=>{
+//     console.log('3000 är igång')
+// })
+
+
+
+const express = require('express')
+const app = express()
+
+// installerade EJS $npm i ejs - för att visa en fil beronde på vilken adress vi är på
+
+// implementera ejs
+app.set("view engine", "ejs")
+
+// skapar en get
+app.get('/', (request, response)=>{
+    response.render('index', {name : 'Christopher'})
 })
+
+const userRouter = require('./routes/users')
+
+// Middleware
+app.use("/users", userRouter)
+
+.listen(3000, ()=>{
+    console.log('3000 är igång')
+})
+
+
+// nu ska vi skapa en router
