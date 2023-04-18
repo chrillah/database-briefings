@@ -231,29 +231,87 @@
 // })
 
 // .listen(8080, ()=>{
-//     console.log('3000 är igång')
+//     console.log('8080 är igång')
 // })
 
 // Avancera - 3) Strängar i en JSON-array)
 // OK
 
 // const express = require('express')
-
 // const app = express()
 
-// const array = []
+// const arrayOfUserAgents = []
 
 // app.get('/', (request, response)=>{
-//    const agent =  request.headers['user-agent']
-//     array.push(agent)
-//     response.send(`${agent}`)
+//    const userAgent =  request.headers['user-agent']
+//    arrayOfUserAgents.push(userAgent)
+//     response.send(`${userAgent}`)
 // })
 // app.get('/log', (request, response)=>{
-//     response.json(array)
+//     response.json(arrayOfUserAgents)
 // })
 // .listen(8080, ()=>{
 //     console.log('8080 är igång')
 // })
+
+// Avancera - 4) JSON-objekt i en JSON-array)
+// OK
+
+// const express = require('express')
+// const app = express()
+
+// let arrayOfUserAgents = []
+
+// app.get('/', (request, response)=>{
+//     const time = new Date()
+//     const date = time.toISOString()
+//    const userAgent =  request.headers['user-agent']
+//    arrayOfUserAgents.push({userAgent, time : date})
+//     response.send(`${userAgent}`)
+// })
+// app.get('/log', (request, response)=>{
+//     response.json(arrayOfUserAgents)
+// })
+
+// app.delete('/log', (request, response)=>{
+//     arrayOfUserAgents = []
+//     response.send('Empty')
+// })
+// .listen(8080, ()=>{
+//     console.log('8080 är igång')
+// })
+
+// Avancera - 5) VG Accept)
+// OK
+
+const express = require('express')
+const app = express()
+
+let arrayOfUserAgents = []
+
+app.get('/', (request, response)=>{
+    const time = new Date()
+    const date = time.toISOString()
+   const userAgent =  request.headers['user-agent']
+   const accept = request.headers['accept']
+   if(accept === '*/*'){
+    console.log("Accept "+ accept)
+   }
+   if(accept === 'application/json')
+   arrayOfUserAgents.push({userAgent, time : date})
+    response.send(`${userAgent}`)
+})
+app.get('/log', (request, response)=>{
+    response.json(arrayOfUserAgents)
+})
+
+app.delete('/log', (request, response)=>{
+    arrayOfUserAgents = []
+    response.send('Empty')
+})
+.listen(8080, ()=>{
+    console.log('8080 är igång')
+})
 
 // const express = require('express');
 // const app = express();
@@ -303,18 +361,95 @@
 //     console.log('8080 is on')
 // })
 
-// Avancera - 1) Två adressparametrar - INTE OK
+// Avancera - 2) Två adressparametrar - OK
 
-const express = require('express')
-const app = express()
+// const express = require('express')
+// const app = express()
 
-app.get('/add/:x/:y', (req, res)=>{
-    let x = parseInt(req.params.x)
-    let y = parseInt(req.params.y)
-    let sum = (x+y)
-    res.send(`${sum}`)
-})
+// app.get('/add/:x/:y', (req, res)=>{
+//     let x = parseInt(req.params.x)
+//     let y = parseInt(req.params.y)
+//     let sum = (x+y)
+//     res.send(`${sum}`)
+// })
 
-.listen(8080, ()=>{
-    console.log('8080 är igång')
-})
+// .listen(8080, ()=>{
+//     console.log('8080 är igång')
+// })
+
+// Avancera - 3) Query-parametrar - OK
+// const express = require('express')
+// const app = express()
+
+// app.get('/add/', (req, res)=>{
+//     if(parseInt(req.query.x) >= 0  && parseInt(req.query.y) >= 0){
+//         let x = parseInt(req.query.x)
+//         let y = parseInt(req.query.y)
+//         let sum = (x+y)
+//         res.send(`${sum}`)
+//     } else{
+//         console.log('Funkar')
+//         res.status(400)
+//         res.send()
+//     }
+// })
+
+// .listen(8080, ()=>{
+//     console.log('8080 är igång')
+// })
+
+// Avancera - 4) En upprepad query-parametrar - OK
+
+// const express = require('express')
+// const app = express()
+
+// app.get('/add/', (req, res)=>{
+//     if(parseInt(req.query.x) >= 0){
+//         let x = []
+//         x = req.query.x
+//         let sum = 0
+//         for(let i = 0; i< x.length; i++){
+//             sum += parseInt(x[i])
+//         }
+//         res.send(`${sum}`)
+//     }
+//     else{
+//         res.status(400)
+//         res.send()
+//     }
+// })
+
+// .listen(8080, ()=>{
+//     console.log('8080 är igång')
+// })
+
+// Avancera - 5) VG API-nyckel - OK
+// const express = require('express')
+// const app = express()
+
+// app.use((req, res, next)=>{
+//     if("2a160d03-d430-4ce4-a79c-2cb14f626ee4" !== req.query['api-key']){
+//         res.status(401).send()
+//     }
+//     next()
+// })
+
+// app.get('/add/', (req, res)=>{
+//     if(parseInt(req.query.x) >= 0){
+//         let x = []
+//         x = req.query.x
+//         let sum = 0
+//         for(let i = 0; i< x.length; i++){
+//             sum += parseInt(x[i])
+//         }
+//         res.send(`${sum}`)
+//     }
+//     else{
+//         res.status(400)
+//         res.send()
+//     }
+// })
+
+// .listen(8080, ()=>{
+//     console.log('8080 är igång')
+// })
