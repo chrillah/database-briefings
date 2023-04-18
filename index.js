@@ -255,29 +255,66 @@
 //     console.log('8080 är igång')
 // })
 
-const express = require('express');
-const app = express();
+// const express = require('express');
+// const app = express();
 
-const userAgents = [];
+// const userAgents = [];
 
-app.get('/', (req, res) => {
-  const userAgent = req.get('User-Agent');
-  const date = new Date();
-  const isoDate = date.toISOString();
-  const userAgentObj = { userAgent, time: isoDate };
-  userAgents.push(userAgentObj);
-  res.send('User-Agent and time saved to array!');
-});
+// app.get('/', (req, res) => {
+//   const userAgent = req.get('User-Agent');
+//   const date = new Date();
+//   const isoDate = date.toISOString();
+//   const userAgentObj = { userAgent, time: isoDate };
+//   userAgents.push(userAgentObj);
+//   res.send('User-Agent and time saved to array!');
+// });
 
-app.get('/log', (req, res) => {
-  res.json(userAgents);
-});
+// app.get('/log', (req, res) => {
+//   res.json(userAgents);
+// });
 
-app.delete('/log', (req, res) => {
-  userAgents.length = 0;
-  res.send('Array cleared');
-});
+// app.delete('/log', (req, res) => {
+//   userAgents.length = 0;
+//   res.send('Array cleared');
+// });
 
-app.listen(8080, () => {
-  console.log('Server started on port 8080');
-});
+// app.listen(8080, () => {
+//   console.log('Server started on port 8080');
+// });
+
+
+// Avancera - 1) En adressparameter - OK
+
+// const express = require('express')
+// const app = express()
+
+// let count = 0
+// app.get('/count', (req, res)=>{
+//     res.send(`${count}`)
+// })
+
+// app.post('/add/:number', (req, res)=>{
+//     count += parseInt(req.params.number)
+//     res.status(200).send()
+
+// })
+
+// .listen(8080, ()=>{
+//     console.log('8080 is on')
+// })
+
+// Avancera - 1) Två adressparametrar - INTE OK
+
+const express = require('express')
+const app = express()
+
+app.get('/add/:x/:y', (req, res)=>{
+    let x = parseInt(req.params.x)
+    let y = parseInt(req.params.y)
+    let sum = (x+y)
+    res.send(`${sum}`)
+})
+
+.listen(8080, ()=>{
+    console.log('8080 är igång')
+})
