@@ -340,7 +340,6 @@
 //   console.log('Server started on port 8080');
 // });
 
-
 // Avancera - 1) En adressparameter - OK
 
 // const express = require('express')
@@ -453,3 +452,129 @@
 // .listen(8080, ()=>{
 //     console.log('8080 är igång')
 // })
+
+// Avancera - 1) Inloggning via JSON - OK
+// const express = require('express')
+// const app = express()
+
+// app.use(express.json())
+
+// app.post('/login', (request, response) => {
+//     const email = request.body.email
+//     const password = request.body.password
+//     if (email === 'alice@example.com' && password === 'secret') {
+//         response.status(200).send('OK')
+//     } else if (
+//         (!email && !password) ||
+//         (!email && password === 'secret') ||
+//         (email === 'alice@example.com' && !password)
+//     ) {
+//         response.status(400).send('BAD REQUEST')
+//     } else {
+//         response.status(401).send('UNAUTHORIZED')
+//     }
+// })
+// .listen(8080, () => {
+//     console.log('8080 is on')
+// })
+
+// Avancera - 2) Skapa ett konto via JSON -  INTE OK
+// const express = require('express')
+// const app = express()
+// app.use(express.json())
+// let arrayOfUsers = [
+//     {
+//         email: 'alice@example.com',
+//         password: 'secret'
+//     }
+// ]
+
+// app.post('/create-account', (request, response) => {
+//     let email = request.body.email
+//     let password = request.body.password
+//     const login = arrayOfUsers.find((user) => user.email === email)
+//     if (login && login.email === email && login.password === password) {
+//         response.status(409).send('CONFLICT BABY')
+//     } else if (!email && !password) {
+//         response.status(400).send('BAD REQUEST')
+//     } else if (!email) {
+//         response.status(400).send('BAD REQUEST')
+//     } else if (!password) {
+//         response.status(400).send('BAD REQUEST')
+//     } else {
+//         const account = { email, password }
+//         arrayOfUsers.push(account)
+//         response.status(201).send('CREATED')
+//     }
+// })
+
+// app.post('/login', (request, response) => {
+//     const email = request.body.email
+//     const password = request.body.password
+//     if (email && password) {
+//         const login = arrayOfUsers.find((user) => user.email === email)
+//         if (login && email === login.email && password === login.password) {
+//             response.status(200).send('OK')
+//         } else {
+//             response.status(401).send('UNAUTHORIZED')
+//         }
+//     } else {
+//         response.status(400).send('BAD REQUEST')
+//     }
+// }).listen(8080, () => {
+//     console.log('8080 is on')
+// })
+
+// Avancera - 3) Skapa flera konton via JSON -  INTE OK
+const express = require('express')
+const app = express()
+app.use(express.json())
+let arrayOfUsers = [
+    {
+        email: 'alice@example.com',
+        password: 'secret'
+    }
+]
+
+app.post('/create-accounts', (request, response) =>{
+    const arrayOfAccounts = request.body
+    if(!arrayOfAccounts){
+        response.status(400).send('BAD REQUEST')
+    }
+})
+
+app.post('/create-account', (request, response) => {
+    let email = request.body.email
+    let password = request.body.password
+    const login = arrayOfUsers.find((user) => user.email === email)
+    if (login && login.email === email && login.password === password) {
+        response.status(409).send('CONFLICT BABY')
+    } else if (!email && !password) {
+        response.status(400).send('BAD REQUEST')
+    } else if (!email) {
+        response.status(400).send('BAD REQUEST')
+    } else if (!password) {
+        response.status(400).send('BAD REQUEST')
+    } else {
+        const account = { email, password }
+        arrayOfUsers.push(account)
+        response.status(201).send('CREATED')
+    }
+})
+
+app.post('/login', (request, response) => {
+    const email = request.body.email
+    const password = request.body.password
+    if (email && password) {
+        const login = arrayOfUsers.find((user) => user.email === email)
+        if (login && email === login.email && password === login.password) {
+            response.status(200).send('OK')
+        } else {
+            response.status(401).send('UNAUTHORIZED')
+        }
+    } else {
+        response.status(400).send('BAD REQUEST')
+    }
+}).listen(8080, () => {
+    console.log('8080 is on')
+})
