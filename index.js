@@ -282,36 +282,36 @@
 // })
 
 // Avancera - 5) VG Accept)
-// OK
+// INTE OK ___ PROGRESS <-----
 
-const express = require('express')
-const app = express()
+// const express = require('express')
+// const app = express()
 
-let arrayOfUserAgents = []
+// let arrayOfUserAgents = []
 
-app.get('/', (request, response)=>{
-    const time = new Date()
-    const date = time.toISOString()
-   const userAgent =  request.headers['user-agent']
-   const accept = request.headers['accept']
-   if(accept === '*/*'){
-    console.log("Accept "+ accept)
-   }
-   if(accept === 'application/json')
-   arrayOfUserAgents.push({userAgent, time : date})
-    response.send(`${userAgent}`)
-})
-app.get('/log', (request, response)=>{
-    response.json(arrayOfUserAgents)
-})
+// app.get('/', (request, response)=>{
+//     const time = new Date()
+//     const date = time.toISOString()
+//    const userAgent =  request.headers['user-agent']
+//    const accept = request.headers['accept']
+//    if(accept === '*/*'){
+//     console.log("Accept "+ accept)
+//    }
+//    if(accept === 'application/json')
+//    arrayOfUserAgents.push({userAgent, time : date})
+//     response.send(`${userAgent}`)
+// })
+// app.get('/log', (request, response)=>{
+//     response.json(arrayOfUserAgents)
+// })
 
-app.delete('/log', (request, response)=>{
-    arrayOfUserAgents = []
-    response.send('Empty')
-})
-.listen(8080, ()=>{
-    console.log('8080 är igång')
-})
+// app.delete('/log', (request, response)=>{
+//     arrayOfUserAgents = []
+//     response.send('Empty')
+// })
+// .listen(8080, ()=>{
+//     console.log('8080 är igång')
+// })
 
 // const express = require('express');
 // const app = express();
