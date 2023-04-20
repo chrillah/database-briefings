@@ -26,7 +26,7 @@
 //     response.end()
 // })
 // app.listen({port: 8080}, ()=>{
-//     console.log('Redo på http://localhost:3000/')
+//     console.log('Redo på http://localhost:8080/')
 // })
 
 // Avancera - 3) Metoder utan Express - OK
@@ -94,53 +94,12 @@
 // })
 
 // Avancera - 5) Redirect utan Express (VG))  - Här använder vi en Found Redirect som flyttat den efterfrågade resursern till en annan adress
-// INTE OK
-// const http = require('http')
-
-// const PORT = 8080
-// const REDIRECT_URL = 'http://localhost:3000'
-
-// let count = 0
-// const app = http.createServer((request, response) => {
-//     if (request.url === '/') {
-//         response.write('Hejsan svejsan.')
-//     } else if (request.url === '/count') {
-//         if (request.method === 'GET') {
-//             response.write(`${count}`)
-//         } else {
-//             response.statusCode = 405
-//         }
-//     } else if (request.url === '/increment') {
-//         if (request.method === 'POST') {
-//             count++
-//             response.write(`${count}`)
-//         } else {
-//             response.statusCode = 405
-//         }
-//     } else if (request.url.startsWith('/add/') && request.method === 'POST') {
-//         const number = parseInt(request.url.split('/')[2])
-//         count += number
-//         response.write(`${count}`)
-//     } else if (request.url === '/foo') {
-//         response.write('bar')
-//     } else if (request.url === '/baz') {
-//         response.write('qux')
-//     } else {
-//         response.statusCode = 404
-//     }
-//     response.end()
-// })
-// app.listen({ port: 8080 }, () => {
-//     console.log('Redo på http://localhost:8080/')
-// })
-
-// Avancera - 5) Redirect utan Express (VG))  - Här använder vi en Found Redirect som flyttat den efterfrågade resursern till en annan adress
 // OK
 // const http = require('http')
 
 // let count = 0
 
-// const handleReq = (req, resp) => {
+// const originalReq = (req, resp) => {
 //   if (req.url === '/') {
 //     resp.write('Hejsan svejsan.')
 //   } else if (req.url === '/count') {
@@ -171,16 +130,16 @@
 //   resp.end()
 // }
 
-// const redirectReq = (req, resp) => {
+// const relocateReq = (req, resp) => {
 //   resp.writeHead(302, { Location: 'http://localhost:3000/' })
 //   resp.end()
 // }
 
 // const serv = http.createServer((req, resp) => {
 //   if (req.url.startsWith('/redirect')) {
-//     redirectReq(req, resp)
+//     relocateReq(req, resp)
 //   } else {
-//     handleReq(req, resp)
+//     originalReq(req, resp)
 //   }
 // })
 
@@ -189,12 +148,14 @@
 // })
 
 // const redirect = http.createServer((req, resp) => {
-//   redirectReq(req, resp)
+//     relocateReq(req, resp)
 // })
 
 // redirect.listen({ port: 8080 }, () => {
 //   console.log('Redo på http://localhost:8080/')
 // })
+
+
 
 // Avancera - 1) En första webbtjänst med Express)
 // OK
@@ -524,6 +485,94 @@
 // }).listen(8080, () => {
 //     console.log('8080 is on')
 // })
+
+
+
+// ______________________________________________________________________________
+
+// const express = require('express')
+// const app = express()
+
+// app.use(express.json())
+
+// const accounts = []
+
+// app.post('/create-account', (request, response) => {
+//   const email = request.body.email
+//   const password = request.body.password
+
+//   if (!email || !password) {
+//     response.status(400).send('BAD REQUEST')
+//   } else if (accounts.some(account => account.email === email)) {
+//     response.status(409).send('CONFLICT')
+//   } else {
+//     accounts.push({ email, password })
+//     response.status(201).send('CREATED')
+//   }
+// })
+
+// app.post('/login', (request, response) => {
+//   const email = request.body.email
+//   const password = request.body.password
+//   const account = accounts.find(account => account.email === email)
+
+//   if (!email || !password) {
+//     response.status(400).send('BAD REQUEST')
+//   } else if (account && account.password === password) {
+//     response.status(200).send('OK')
+//   } else {
+//     response.status(401).send('UNAUTHORIZED')
+//   }
+// })
+
+// app.listen(8080, () => {
+//   console.log('Server is running on port 8080')
+// })
+
+// ______________________________________________________________________________
+
+// Avancera - 2) Skapa ett konto via JSON -  OK
+
+// const express = require('express')
+// const app = express()
+
+// app.use(express.json())
+
+// const accounts = []
+
+// app.post('/create-account', (req, res) => {
+//   const email = req.body.email
+//   const password = req.body.password
+
+//   if (!email || !password) {
+//     res.status(400).send('BAD REQUEST')
+//   } else if (accounts.find(account => account.email === email)) {
+//     res.status(409).send('CONFLICT BABY')
+//   } else {
+//     accounts.push({ email, password })
+//     res.status(201).send('CREATED')
+//   }
+// })
+
+// app.post('/login', (req, res) => {
+//   const email = req.body.email
+//   const password = req.body.password
+//   const account = accounts.find(account => account.email === email)
+
+//   if (!email || !password) {
+//     res.status(400).send('BAD REQUEST')
+//   } else if (account && account.password === password) {
+//     res.status(200).send('OK')
+//   } else {
+//     res.status(401).send('UNAUTHORIZED')
+//   }
+// })
+
+
+// app.listen(8080, () => {
+//   console.log('8080')
+// })
+
 
 // Avancera - 3) Skapa flera konton via JSON -  INTE OK
 const express = require('express')
