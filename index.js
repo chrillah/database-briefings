@@ -94,7 +94,7 @@
 // })
 
 // Avancera - 5) Redirect utan Express (VG))  - Här använder vi en Found Redirect som flyttat den efterfrågade resursern till en annan adress
-// OK
+// inte OK
 // const http = require('http')
 
 // let count = 0
@@ -131,19 +131,11 @@
 // }
 
 // const relocateReq = (req, resp) => {
-//   resp.writeHead(302, { Location: 'http://localhost:3000/' })
+//   resp.writeHead({ Location: 'http://localhost:3000/' })
 //   resp.end()
 // }
 
-// const serv = http.createServer((req, resp) => {
-//   if (req.url.startsWith('/redirect')) {
-//     relocateReq(req, resp)
-//   } else {
-//     originalReq(req, resp)
-//   }
-// })
-
-// serv.listen({ port: 3000 }, () => {
+// app.listen({ port: 3000 }, () => {
 //   console.log('Redo på http://localhost:3000/')
 // })
 
@@ -386,7 +378,7 @@
 // const app = express()
 
 // app.use((req, res, next)=>{
-//     if("2a160d03-d430-4ce4-a79c-2cb14f626ee4" !== req.query['api-key']){
+//     if("2a160d03-d430-4ce4-a79c-2cb14f626ee4" !== req.query.api-key){
 //         res.status(401).send()
 //     }
 //     next()
@@ -484,49 +476,6 @@
 //     console.log('8080 is on')
 // })
 
-// ______________________________________________________________________________
-
-// const express = require('express')
-// const app = express()
-
-// app.use(express.json())
-
-// const accounts = []
-
-// app.post('/create-account', (request, response) => {
-//   const email = request.body.email
-//   const password = request.body.password
-
-//   if (!email || !password) {
-//     response.status(400).send('BAD REQUEST')
-//   } else if (accounts.some(account => account.email === email)) {
-//     response.status(409).send('CONFLICT')
-//   } else {
-//     accounts.push({ email, password })
-//     response.status(201).send('CREATED')
-//   }
-// })
-
-// app.post('/login', (request, response) => {
-//   const email = request.body.email
-//   const password = request.body.password
-//   const account = accounts.find(account => account.email === email)
-
-//   if (!email || !password) {
-//     response.status(400).send('BAD REQUEST')
-//   } else if (account && account.password === password) {
-//     response.status(200).send('OK')
-//   } else {
-//     response.status(401).send('UNAUTHORIZED')
-//   }
-// })
-
-// app.listen(8080, () => {
-//   console.log('Server is running on port 8080')
-// })
-
-// ______________________________________________________________________________
-
 // Avancera - 2) Skapa ett konto via JSON -  OK
 
 // const express = require('express')
@@ -586,8 +535,13 @@
 //     const badUsers = []
 //     let pass = true
 //     let isThere = false
-//     if (Object.keys(request.body).length === 0) {
+//     if (Object.keys(request.body).length === 0 ) {
 //         pass = false
+//     }
+
+//     if(request.body.email || request.password){
+//         response.status(400).send('BAD REQUEST')
+//         return
 //     }
 //     request.body.forEach((account) => {
 //         if (!account.email || !account.password) {
@@ -603,7 +557,6 @@
 //         }
 //     })
 //     if (badUsers.length > 0 || !pass) {
-//         console.log(badUsers)
 //         response.status(400).send('BAD REQUEST')
 //         return
 //     }
@@ -643,10 +596,53 @@
 //     }
 // })
 
-// Måste lägga till så att fler konton kan logga in samtidigt
+// Måste lägga till så att fler konton kan logga in samtidigt, i en array
 // app.post('/login', (request, response) => {
-//     const email = request.body.email
-//     const password = request.body.password
+//     let arrayOfLogins = []
+//     let email =''
+//     let password=''
+
+// if(Object.keys(request.body).length > 2){ // test
+//     request.body.forEach(newLogin=>{
+//         arrayOfLogins.push({
+//             email: newLogin.email,
+//             password : newLogin.password
+//         })
+//     })
+// } else{
+//     email = request.body.email
+//     password = request.body.password
+// }
+
+// email = request.body.email
+// password = request.body.password
+// if (email && password) {
+//     const login = arrayOfUsers.find((user) => user.email === email)
+//     if (login && email === login.email && password === login.password) {
+//         response.status(200).send('OK')
+//     } else {
+//         response.status(401).send('UNAUTHORIZED')
+//     }
+// } else {
+//     response.status(400).send('BAD REQUEST')
+// }
+
+// if(arrayOfLogins){ // test
+//     arrayOfLogins.forEach(login =>{
+//         if (login.email && login.password) {
+//             const newLogin = arrayOfUsers.find((user) => user.email === email)
+//             if (newLogin && login.email === newLogin.email && login.password === newLogin.password) {
+//                 response.status(200).send('OK')
+//             } else {
+//                 response.status(401).send('UNAUTHORIZED')
+//             }
+//         } else {
+//             response.status(400).send('BAD REQUEST')
+//         }
+//     })
+// }
+
+// else{ //test
 //     if (email && password) {
 //         const login = arrayOfUsers.find((user) => user.email === email)
 //         if (login && email === login.email && password === login.password) {
@@ -657,7 +653,10 @@
 //     } else {
 //         response.status(400).send('BAD REQUEST')
 //     }
-// }).listen(8080, () => {
+// }
+// })
+
+// app.listen(8080, () => {
 //     console.log('8080 is on')
 // })
 
@@ -669,14 +668,10 @@
 // app.use(express.json())
 
 // app.get('/', async (req, res)=>{
-// try{
-//     const data = await fetch('http://avancera.app/cities')
-//     const jsonData = await data.json()
-//     res.json(jsonData)
-// }
-// catch{
-//     res.status(500).send('ERROR')
-// }
+//     let jsonData = []
+//     const data = await fetch('http://avancera.app/cities/')
+// jsonData = await data.json()
+//     res.status(200).json(jsonData)
 // }).listen(8080,()=>{console.log('8080')})
 
 // 2
@@ -687,30 +682,26 @@
 
 // app.get('/:id', async (req, res) => {
 //     console.log(req.params.id)
+//     const data = await fetch(`http://avancera.app/cities/${req.params.id}`)
 //     try {
-//         const data = await fetch(`http://avancera.app/cities/${req.params.id}`)
-//         if (!data) {
+//         if (!data || data === null || data === '') {
 //             res.status(404).send('Not Found')
+//         } else {
+//             const jsonData = await data.json()
+//             res.json(jsonData)
 //         }
-//         const jsonData = await data.json()
-//         res.json(jsonData)
 //     } catch {
-//         res.status(500).send('ERROR')
+//         res.status(404).send('Not Found')
 //     }
 // })
 
 // app.get('/', async (req, res) => {
-//     try {
-//         const data = await fetch('http://avancera.app/cities')
-//         const jsonData = await data.json()
-//         res.json(jsonData)
-//     } catch {
-//         res.status(500).send('ERROR')
-//     }
+//     const data = await fetch('http://avancera.app/cities')
+//     const jsonData = await data.json()
+//     res.json(jsonData)
 // }).listen(8080, () => {
 //     console.log('8080')
 // })
-
 
 // __________________________________________________________
 // const express = require('express');
@@ -747,44 +738,36 @@ app.use(express.json())
 
 app.get('/:id', async (req, res) => {
     console.log(req.params.id)
+    const data = await fetch(`http://avancera.app/cities/${req.params.id}`)
     try {
-        const data = await fetch(`http://avancera.app/cities/${req.params.id}`)
-        if (!data) {
+        if (!data || data === null || data === '') {
             res.status(404).send('Not Found')
+        } else {
+            const jsonData = await data.json()
+            res.json(jsonData)
         }
-        const jsonData = await data.json()
-        res.json(jsonData)
     } catch {
-        res.status(500).send('ERROR')
+        res.status(404).send('Not Found')
     }
 })
 
+// HÄR MÅSTE DU TÄNKA OM!
 app.get('/', async (req, res) => {
-    const { name } = req.query;
+    let data = []
+    if (req.query.name) {
+        try {
+            data = await fetch(
+                `http://avancera.app/cities/?name=${req.query.name}`
+            )
 
-    try {
-      const response = await fetch(`http://avancera.app/cities`);
-      const cities = await response.json();
-      const filteredCities = cities.filter(city => city.name.toLowerCase().includes(name.toLowerCase()));
-      res.json(filteredCities);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+        } catch {
+            res.status(404)
+        }
+    } else {
+        data = await fetch('http://avancera.app/cities')
     }
-    // const data = []
-    // try {
-    //     if (req.query.name) {
-    //         data = await fetch(
-    //             `http://avancera.app/cities/?name=${req.query.name}`
-    //         )
-    //         console.log(data)
-    //     } else {
-    //         data = await fetch('http://avancera.app/cities')
-    //     }
-    //     const jsonData = await data.json()
-    //     res.json(jsonData)
-    // } catch {
-    //     res.status(500).send('ERROR')
-    // }
+    const jsonData = await data.json()
+    res.json(jsonData)
 }).listen(8080, () => {
     console.log('8080')
 })
