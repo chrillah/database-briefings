@@ -155,8 +155,6 @@
 //   console.log('Redo på http://localhost:8080/')
 // })
 
-
-
 // Avancera - 1) En första webbtjänst med Express)
 // OK
 
@@ -486,8 +484,6 @@
 //     console.log('8080 is on')
 // })
 
-
-
 // ______________________________________________________________________________
 
 // const express = require('express')
@@ -568,62 +564,227 @@
 //   }
 // })
 
-
 // app.listen(8080, () => {
 //   console.log('8080')
 // })
 
+// Avancera - 3) Skapa flera konton via JSON - INTE OK
+// const express = require('express')
+// const app = express()
 
-// Avancera - 3) Skapa flera konton via JSON -  INTE OK
+// app.use(express.json())
+// let arrayOfUsers = [
+//     {
+//         email: 'alice@example.com',
+//         password: 'secret'
+//     }
+// ]
+
+// // Tydligen är det en konflikt i denna som gör att man inte kan ladda in fler samtidigt :(
+// app.post('/create-accounts', (request, response) => {
+//     const newAccounts = []
+//     const badUsers = []
+//     let pass = true
+//     let isThere = false
+//     if (Object.keys(request.body).length === 0) {
+//         pass = false
+//     }
+//     request.body.forEach((account) => {
+//         if (!account.email || !account.password) {
+//             badUsers.push(account)
+//         } else {
+//             for (let i = 0; i < arrayOfUsers.length; i++) {
+//                 if (account.email === arrayOfUsers[i].email) {
+//                     isThere = true
+//                     return
+//                 }
+//             }
+//             newAccounts.push(account)
+//         }
+//     })
+//     if (badUsers.length > 0 || !pass) {
+//         console.log(badUsers)
+//         response.status(400).send('BAD REQUEST')
+//         return
+//     }
+//     if (isThere) {
+//         response.status(409).send('CONFLICT BABY')
+//         return
+//     }
+//     if (newAccounts) {
+//         newAccounts.forEach((newUser) => {
+//             arrayOfUsers.push(newUser)
+//         })
+//         response.status(201).send('OK')
+//         return
+//     }
+// })
+
+// app.get('/create-accounts', (req, res) => {
+//     res.json(arrayOfUsers)
+// })
+
+// app.post('/create-account', (request, response) => {
+//     let email = request.body.email
+//     let password = request.body.password
+//     const login = arrayOfUsers.find((user) => user.email === email)
+//     if (login && login.email === email && login.password === password) {
+//         response.status(409).send('CONFLICT BABY')
+//     } else if (!email && !password) {
+//         response.status(400).send('BAD REQUEST')
+//     } else if (!email) {
+//         response.status(400).send('BAD REQUEST')
+//     } else if (!password) {
+//         response.status(400).send('BAD REQUEST')
+//     } else {
+//         const account = { email, password }
+//         arrayOfUsers.push(account)
+//         response.status(201).send('CREATED')
+//     }
+// })
+
+// Måste lägga till så att fler konton kan logga in samtidigt
+// app.post('/login', (request, response) => {
+//     const email = request.body.email
+//     const password = request.body.password
+//     if (email && password) {
+//         const login = arrayOfUsers.find((user) => user.email === email)
+//         if (login && email === login.email && password === login.password) {
+//             response.status(200).send('OK')
+//         } else {
+//             response.status(401).send('UNAUTHORIZED')
+//         }
+//     } else {
+//         response.status(400).send('BAD REQUEST')
+//     }
+// }).listen(8080, () => {
+//     console.log('8080 is on')
+// })
+
+// MIN EGNA CITIESTJÄNST
+// 1 - EJ GODKÄND
+// const express = require('express')
+// const app = express()
+
+// app.use(express.json())
+
+// app.get('/', async (req, res)=>{
+// try{
+//     const data = await fetch('http://avancera.app/cities')
+//     const jsonData = await data.json()
+//     res.json(jsonData)
+// }
+// catch{
+//     res.status(500).send('ERROR')
+// }
+// }).listen(8080,()=>{console.log('8080')})
+
+// 2
+// const express = require('express')
+// const app = express()
+
+// app.use(express.json())
+
+// app.get('/:id', async (req, res) => {
+//     console.log(req.params.id)
+//     try {
+//         const data = await fetch(`http://avancera.app/cities/${req.params.id}`)
+//         if (!data) {
+//             res.status(404).send('Not Found')
+//         }
+//         const jsonData = await data.json()
+//         res.json(jsonData)
+//     } catch {
+//         res.status(500).send('ERROR')
+//     }
+// })
+
+// app.get('/', async (req, res) => {
+//     try {
+//         const data = await fetch('http://avancera.app/cities')
+//         const jsonData = await data.json()
+//         res.json(jsonData)
+//     } catch {
+//         res.status(500).send('ERROR')
+//     }
+// }).listen(8080, () => {
+//     console.log('8080')
+// })
+
+
+// __________________________________________________________
+// const express = require('express');
+// const fetch = require('node-fetch');
+// const app = express();
+
+// app.use(express.json());
+
+// app.get('/:id', async (req, res) => {
+//   const { id } = req.params;
+
+//   try {
+//     const response = await fetch(`http://avancera.app/cities/${id}`);
+//     if (response.status === 404) {
+//       return res.status(404).json({ message: 'City not found' });
+//     }
+//     const city = await response.json();
+//     res.json(city);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// });
+
+// app.listen(8080, () => {
+//   console.log('Server started on port 8080');
+// });
+
+// __________________________________________________________
+// 3
 const express = require('express')
 const app = express()
+
 app.use(express.json())
-let arrayOfUsers = [
-    {
-        email: 'alice@example.com',
-        password: 'secret'
-    }
-]
 
-app.post('/create-accounts', (request, response) =>{
-    const arrayOfAccounts = request.body
-    if(!arrayOfAccounts){
-        response.status(400).send('BAD REQUEST')
-    }
-})
-
-app.post('/create-account', (request, response) => {
-    let email = request.body.email
-    let password = request.body.password
-    const login = arrayOfUsers.find((user) => user.email === email)
-    if (login && login.email === email && login.password === password) {
-        response.status(409).send('CONFLICT BABY')
-    } else if (!email && !password) {
-        response.status(400).send('BAD REQUEST')
-    } else if (!email) {
-        response.status(400).send('BAD REQUEST')
-    } else if (!password) {
-        response.status(400).send('BAD REQUEST')
-    } else {
-        const account = { email, password }
-        arrayOfUsers.push(account)
-        response.status(201).send('CREATED')
-    }
-})
-
-app.post('/login', (request, response) => {
-    const email = request.body.email
-    const password = request.body.password
-    if (email && password) {
-        const login = arrayOfUsers.find((user) => user.email === email)
-        if (login && email === login.email && password === login.password) {
-            response.status(200).send('OK')
-        } else {
-            response.status(401).send('UNAUTHORIZED')
+app.get('/:id', async (req, res) => {
+    console.log(req.params.id)
+    try {
+        const data = await fetch(`http://avancera.app/cities/${req.params.id}`)
+        if (!data) {
+            res.status(404).send('Not Found')
         }
-    } else {
-        response.status(400).send('BAD REQUEST')
+        const jsonData = await data.json()
+        res.json(jsonData)
+    } catch {
+        res.status(500).send('ERROR')
     }
+})
+
+app.get('/', async (req, res) => {
+    const { name } = req.query;
+
+    try {
+      const response = await fetch(`http://avancera.app/cities`);
+      const cities = await response.json();
+      const filteredCities = cities.filter(city => city.name.toLowerCase().includes(name.toLowerCase()));
+      res.json(filteredCities);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+    // const data = []
+    // try {
+    //     if (req.query.name) {
+    //         data = await fetch(
+    //             `http://avancera.app/cities/?name=${req.query.name}`
+    //         )
+    //         console.log(data)
+    //     } else {
+    //         data = await fetch('http://avancera.app/cities')
+    //     }
+    //     const jsonData = await data.json()
+    //     res.json(jsonData)
+    // } catch {
+    //     res.status(500).send('ERROR')
+    // }
 }).listen(8080, () => {
-    console.log('8080 is on')
+    console.log('8080')
 })
