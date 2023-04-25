@@ -213,3 +213,80 @@
 // app.listen(8080, () => {
 //   console.log('Server started on port 8080');
 // });
+
+
+const express = require('express');
+const app = express();
+app.use(express.urlencoded({ extended: false }));
+let arrayOfMessage = [];
+
+const messageForm = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Meddelandeformulär</title>
+  </head>
+  <body>
+    <h1>Posta ett meddelande</h1>
+    <form action="/" method="post">
+      <label>
+        Namn:
+        <input name="name" placeholder="Namn" value="">
+      </label>
+      <label>
+        Text:
+        <input name="text" placeholder="Text" value="">
+      </label>
+      <input type="submit" value="Skicka">
+    </form>
+  </body>
+</html>
+`;
+
+app.get('/', (req, res) => {
+  res.send(messageForm);
+});
+
+app.post('/', (req, res) => {
+  const name = req.body.name;
+  const text = req.body.text;
+
+
+  if (name && text) {
+    arrayOfMessage.push({ name, text });
+  }
+  const listOfMessage = arrayOfMessage.map(message =>
+    `<dt>${message.name}</dt>
+    <dd>${message.text}</dd>`).join('');
+
+
+  const inputMessage = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Meddelanden</title>
+      </head>
+      <body>
+        <dl>
+          ${listOfMessage}
+        </dl>
+        <nav><a href="/">Nytt meddelande</a></nav>
+      </body>
+    </html>
+  `;
+
+
+  res.send(listOfMessage);
+});
+
+// Start the server
+app.listen(8080, () => {
+  console.log('Server started on port 8080');
+});
+
+
+
+
+// CITIES TJÄNST
