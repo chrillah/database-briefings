@@ -662,17 +662,18 @@
 
 // MIN EGNA CITIESTJÄNST
 // 1 - EJ GODKÄND
-// const express = require('express')
-// const app = express()
+const express = require('express')
+const app = express()
 
-// app.use(express.json())
+app.use(express.json())
 
-// app.get('/', async (req, res)=>{
-//     let jsonData = []
-//     const data = await fetch('http://avancera.app/cities/')
-// jsonData = await data.json()
-//     res.status(200).json(jsonData)
-// }).listen(8080,()=>{console.log('8080')})
+app.get('/', async (req, res)=>{
+    let jsonData = []
+    const data = await fetch('http://avancera.app/cities/')
+jsonData = await data.json()
+    res.status(200)
+    request.send(jsonData)
+}).listen(8080,()=>{console.log('8080')})
 
 // 2
 // const express = require('express')
@@ -731,43 +732,43 @@
 
 // __________________________________________________________
 // 3
-const express = require('express')
-const app = express()
+// const express = require('express')
+// const app = express()
 
-app.use(express.json())
+// app.use(express.json())
 
-app.get('/:id', async (req, res) => {
-    console.log(req.params.id)
-    const data = await fetch(`http://avancera.app/cities/${req.params.id}`)
-    try {
-        if (!data || data === null || data === '') {
-            res.status(404).send('Not Found')
-        } else {
-            const jsonData = await data.json()
-            res.json(jsonData)
-        }
-    } catch {
-        res.status(404).send('Not Found')
-    }
-})
+// app.get('/:id', async (req, res) => {
+//     console.log(req.params.id)
+//     const data = await fetch(`http://avancera.app/cities/${req.params.id}`)
+//     try {
+//         if (!data || data === null || data === '') {
+//             res.status(404).send('Not Found')
+//         } else {
+//             const jsonData = await data.json()
+//             res.send(jsonData)
+//         }
+//     } catch {
+//         res.status(404).send('Not Found')
+//     }
+// })
 
 // HÄR MÅSTE DU TÄNKA OM!
-app.get('/', async (req, res) => {
-    let data = []
-    if (req.query.name) {
-        try {
-            data = await fetch(
-                `http://avancera.app/cities/?name=${req.query.name}`
-            )
+// app.get('/', async (req, res) => {
+//     let data = []
+//     if (req.query.name) {
+//         try {
+//             data = await fetch(
+//                 `http://avancera.app/cities/?name=${req.query.name}`
+//             )
 
-        } catch {
-            res.status(404)
-        }
-    } else {
-        data = await fetch('http://avancera.app/cities')
-    }
-    const jsonData = await data.json()
-    res.json(jsonData)
-}).listen(8080, () => {
-    console.log('8080')
-})
+//         } catch {
+//             res.status(404)
+//         }
+//     } else {
+//         data = await fetch('http://avancera.app/cities')
+//     }
+//     const jsonData = await data.json()
+//     res.send(jsonData)
+// }).listen(8080, () => {
+//     console.log('8080')
+// })
