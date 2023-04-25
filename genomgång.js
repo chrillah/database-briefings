@@ -14,15 +14,18 @@
 // })
 
 // Ta emot JSON
-const express = require('express')
-const app = express()
+// const express = require('express')
+// const app = express()
 
-app.use(express.json())
+// app.use(express.json())
 
-app.post('/user', (request, response) =>{
-    response.send(request.body.email)
-})
+// app.post('/user', (request, response) =>{
+//     response.send(request.body.email)
+// })
 
-.listen(3000, ()=>{
-    console.log('JSON-mottagning 3000 är igång')
-})
+// .listen(3000, ()=>{
+//     console.log('JSON-mottagning 3000 är igång')
+// })
+
+
+// SQLite med NODE
