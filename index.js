@@ -1,83 +1,78 @@
-// citiestjänst 3:an
-const express = require('express')
-const app = express()
-app.use(express.json())
-const PORT = 8080
+// SQLite Ta bort och uppdatera via terminalen
+// 4
 
-const cities = [
-    {
-        id: '5347da70-fef3-4e8f-ba49-e8010edba878',
-        name: 'Stockholm',
-        population: 1372565
-    },
-    {
-        id: '4787e794-b3ac-4a63-bba0-03203f78e553',
-        name: 'Göteborg',
-        population: 549839
-    },
-    {
-        id: '4bc43d96-3e84-4695-b777-365dbed33f89',
-        name: 'Malmö',
-        population: 280415
-    },
-    {
-        id: 'ec6b9039-9afb-4632-81aa-ff95338a011a',
-        name: 'Uppsala',
-        population: 140454
-    },
-    {
-        id: '6f9eee1f-b582-4c84-95df-393e443a2cae',
-        name: 'Västerås',
-        population: 110877
-    },
-    {
-        id: '27acb7a0-2b3d-441f-a556-bec0e430992a',
-        name: 'Örebro',
-        population: 107038
-    },
-    {
-        id: '6745e3f4-636a-4ab7-8626-2311120c92c9',
-        name: 'Linköping',
-        population: 104232
-    },
-    {
-        id: 'a8a70019-9382-4215-a5b3-6278eb9232c3',
-        name: 'Helsingborg',
-        population: 97122
-    },
-    {
-        id: '6fc1a491-3710-42f2-936d-e9bf9be4f915',
-        name: 'Jönköping',
-        population: 89396
-    },
-    {
-        id: '45428195-ab40-43d2-ad11-a62933f4a3a8',
-        name: 'Norrköping',
-        population: 87247
+const sqlite = require('sqlite'),
+    sqlite3 = require('sqlite3')
+
+;(async () => {
+    const database = await sqlite.open({
+        driver: sqlite3.Database,
+        filename: 'test.sqlite'
+    })
+
+    await database.run('PRAGMA foreign_keys = ON')
+    const emails = await database.all('SELECT email FROM accounts')
+    if (process.argv[2] === 'list-accounts') {
+        emails.forEach((email) => {
+            console.log(email.email)
+        })
+    } else if (process.argv[2] === 'remove-account') {
+        const removeThisAccount = process.argv[3]
+        try {
+            const dbMessage = await database.run(
+                'DELETE FROM accounts WHERE email=?',
+                [removeThisAccount]
+            )
+            if (dbMessage.stms === undefined) {
+                console.error('ERROR')
+                process.exit(3)
+            } else {
+                console.log(`${removeThisAccount} is DELETED`)
+                process.exit(0)
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    } else if (process.argv[2] === 'change-password') {
+        const email = process.argv[3]
+        const changeThisPassword = process.argv[4]
+        try {
+            const dbMessage = await database.run('UPDATE accounts SET password=? WHERE email=?', [
+                email,
+                changeThisPassword
+            ])
+            if (dbMessage.stms === undefined) {
+                console.error('ERROR')
+                process.exit(3)
+            } else {
+                console.log(`${thisEmail}s password is UPDATED`)
+                process.exit(0)
+            }
+        } catch (error) {
+            if(error.message.includes('constraint')){
+                console.log(error)
+                process.exit(2)
+            }
+            console.error(error)
+            process.exit(2)
+        }
+    } else if (process.argv[2] === 'add-account') {
+        const email = process.argv[3]
+        const password = process.argv[4]
+        try {
+            await database.run(
+                'INSERT INTO accounts (email, password) VALUES (? , ?)',
+                [email, password]
+            )
+
+            console.log(`Account with ${email} added`)
+            process.exit(0)
+        } catch (error) {
+            console.error(error)
+            process.exit(2)
+        }
+    } else {
+        console.error('ERROR-message')
+        process.exit(1)
     }
-]
-
-app.get('/', (request, response) => {
-    response.send(
-        request.query.name === undefined
-        ? cities : cities.filter(city =>city.name.toLowerCase()
-        .indexOf(request.query.name.toLowerCase()) !== -1))
-})
-
-app.get('/:id', (req, res) => {
-    const id = req.params.id
-    console.log(id)
-    const found = cities.find((city) => city.id === id)
-    if (found) {
-        res.status(200).send(found)
-    } else [res.status(404).send('Not found :( ')]
-})
-
-app.get('/', (req, res) => {
-    res.status(200)
-    res.json(cities)
-})
-
-app.listen(PORT, () => {
-    console.log(`${PORT} cities 3`)
-})
+})()
