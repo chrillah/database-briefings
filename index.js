@@ -17,44 +17,54 @@ const sqlite = require('sqlite'),
             console.log(email.email)
         })
     } else if (process.argv[2] === 'remove-account') {
-        const removeThisAccount = process.argv[3]
+        const email = process.argv[3]
         try {
             const dbMessage = await database.run(
-                'DELETE FROM accounts WHERE email=?',
-                [removeThisAccount]
+                'DELETE FROM accounts WHERE email = ?',
+                [email]
             )
-            if (dbMessage.stms === undefined) {
-                console.error('ERROR')
+            if (dbMessage.changes === 0) {
+                console.error(`${email} NOT DELETED`)
                 process.exit(3)
             } else {
-                console.log(`${removeThisAccount} is DELETED`)
+                console.log(`${email} DELETED`)
                 process.exit(0)
             }
         } catch (error) {
             console.error(error)
+            process.exit(2)
         }
     } else if (process.argv[2] === 'change-password') {
         const email = process.argv[3]
         const changeThisPassword = process.argv[4]
         try {
-            const dbMessage = await database.run('UPDATE accounts SET password=? WHERE email=?', [
-                email,
-                changeThisPassword
-            ])
-            if (dbMessage.stms === undefined) {
-                console.error('ERROR')
-                process.exit(3)
+            const dbMessage = await database.run(
+                'UPDATE accounts SET password = ? WHERE email = ?',
+                [changeThisPassword, email]
+            )
+            if (dbMessage.changes === 0) {
+                const thisAccountExists = await database.get(
+                    'SELECT * FROM accounts WHERE email = ?',
+                    [email]
+                )
+                if (thisAccountExists) {
+                    console.error(`ERROR ${email}`)
+                    process.exit(3)
+                } else {
+                    console.error(`${email} NO EXIST`)
+                    process.exit(3)
+                }
             } else {
-                console.log(`${thisEmail}s password is UPDATED`)
+                console.log(`${email}s PASSWORD UPDATED`)
                 process.exit(0)
             }
         } catch (error) {
-            if(error.message.includes('constraint')){
-                console.log(error)
+            if (error.message.includes('constraint')) {
+                console.error(error)
                 process.exit(2)
             }
             console.error(error)
-            process.exit(2)
+            process.exit(3)
         }
     } else if (process.argv[2] === 'add-account') {
         const email = process.argv[3]
@@ -65,14 +75,14 @@ const sqlite = require('sqlite'),
                 [email, password]
             )
 
-            console.log(`Account with ${email} added`)
+            console.log(`${email} ADDED`)
             process.exit(0)
         } catch (error) {
             console.error(error)
             process.exit(2)
         }
     } else {
-        console.error('ERROR-message')
+        console.error('ERROR')
         process.exit(1)
     }
 })()
