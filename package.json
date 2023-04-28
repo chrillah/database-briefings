@@ -171,6 +171,7 @@
     "unpipe": "^1.0.0",
     "util-deprecate": "^1.0.2",
     "utils-merge": "^1.0.1",
+    "uuid": "^9.0.0",
     "vary": "^1.1.2",
     "webidl-conversions": "^3.0.1",
     "whatwg-url": "^5.0.0",
@@ -181,7 +182,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node genomgång.js"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
