@@ -1,5 +1,3 @@
-// EJ INLÄMNAD
-// SQLite express 2:an INTE OK - LOGINPROBLEMET
 const express = require('express'),
     sqlite = require('sqlite'),
     sqlite3 = require('sqlite3')
@@ -40,7 +38,7 @@ app.post('/login', async (request, response) => {
                 `INSERT INTO tokens (token, account_id) VALUES (?, ?)`,
                 [token, account[0].id]
             )
-            response.status(201).json({token})
+            response.status(201).send('CREATED')
         }
     } else {
         response.status(400).send('BAD REQUEST')
